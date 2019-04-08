@@ -1,6 +1,3 @@
-let strokePos = {x : 0, y :0};
-
-let radius = 10;
 let myRGB;
 
 let panel;
@@ -14,6 +11,7 @@ let colorPicker;
 function setup()
 {
     generatePanel();
+
     createCanvas(600,600);
     background(255);
 
@@ -78,8 +76,13 @@ function generatePanel()
 
     let colorPickerDiv = createColorController();
 
+    let clearButton = createButton("Clear");
+    clearButton.position(30, 125);
+    clearButton.mouseClicked(clear);
+
     panel.child(thicknessDiv);
     panel.child(colorPickerDiv);
+    panel.child(clearButton);
 
     panel.style('color', '#D0EEFB');
     panel.style('background-color', '#0088C2');
@@ -106,7 +109,6 @@ function updateThicknessVal()
 function changeColor()
 {
     myRGB = colorPicker.color();
-    print(myRGB);
 }
 
 function clear()

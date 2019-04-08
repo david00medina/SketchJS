@@ -54,28 +54,142 @@
 	\tableofcontents
 	\bibliographystyle{apacite}
 	\chapter{Introducción}
+	\textit{P5.js} es una librería de \texttt{Javascript} que, al igual que \textit{Processing}, es utilizada para la creación artística y diseño tecnológico en soporte web.
 	
+	En este documento se exponen los detalles de implementación de una aplicación web de dibujo que hemos denominado \texttt{SketchJS}. Esta experiencia nos permitirá utilizar las primitivas básicas que incluye esta librería librería. 
+	
+	En concreto, se utilizará la librería básica \texttt{p5.js} para implementar la parte gráfica de la aplicación y \texttt{p5.dom} para la generación de los elementos \texttt{DOM} que componen el panel que controla los parámetros de pincel. 
 	
 	\chapter{Método y materiales}
 	\section{Materiales}
-	El desarrollo de este proyecto se ha llevado a cabo utilizando el IDE de desarrollo de aplicaciones \textit{web} de \textit{JetBrains}, \textit{WebStorm}, y las siguientes herramientas:
-	\begin{itemize}
-		\item Librería \texttt{5.js}.
-	\end{itemize}
+	El desarrollo de este proyecto se ha llevado a cabo utilizando el IDE de desarrollo de aplicaciones web de \textit{JetBrains}, \textit{WebStorm}, y las siguientes librerías:
+	
+	\begin{description}
+		\item[Librería \texttt{p5.min.js}] Contiene las primitivas básicas que nos permiten implementar los elementos gráficos de la aplicación web \cite{p5js-reference}.
+		\item[Librería \texttt{p5.dom.min.js}] Utilizada para generar los elementos \texttt{DOM} que conforman el panel de control de los parámetros del pincel \cite{p5dom-reference}.
+	\end{description}
 	
 	\section{Método}
+	El archivo \texttt{sketch.js} contiene todas las rutinas que hacen posible la implementación de esta aplicación de dibujo. Según la función que desempeñan, podemos clasificarlas en:
+	\begin{itemize}
+	 \item Rutina de inicialización y bucle principal
+	 \item Rutinas de generación del panel de control utilizando \texttt{DOM}
+	 \item Eventos
+	 \end{itemize} 
 	
+	\subsection{Rutina de inicialización y bucle principal}\label{sub:main}
+	El conjunto de rutinas que forman parte de este grupo son:
+	\begin{itemize}
+	 	\item \texttt{setup()}
+	 	\item \texttt{draw()}
+	 \end{itemize} 
+	 
+	 \subsubsection{Método \texttt{setup()}}
+	 La librería gráfica \texttt{p5.js} exige que se declare un método \texttt{setup()} en donde se establecerán las configuraciones iniciales que se establecerán antes de pintar sobre el lienzo.
+	 
+	 En primer lugar, se genera el panel de control que presenta al usuario los parámetros configurables del pincel, tal como el color y grosor del mismo. El panel de control se genera al llamar al método \texttt{generatePanel()}.
+	 
+	 Posteriormente, se ajusta el tamaño del lienzo a  \texttt{600x600} píxeles al llamar a la primitiva \texttt{createCanvas()} y se pinta en blanco el fondo del lienzo.
+	 
+	\lstinputlisting[language=Java, firstline=11, lastline=19]{../src/sketch.js}
 	
-	\chapter{Resultados y Discusión}
+	\subsubsection{Método \texttt{draw()}}	
+	El método \texttt{draw()} cambia el icono del ratón por un pincel redondo llamando a la primitiva \texttt{cursor()}.
 	
+	\lstinputlisting[language=Java, firstline=21, lastline=24]{../src/sketch.js}
+	
+	\subsection{Rutinas de generación del panel de control utilizando \texttt{DOM}}\label{sub:dom}
+	Se presentan a continuación las rutinas responsables de la creación del panel:
+	\begin{itemize}
+	 	\item \texttt{generatePanel()}
+	 	\item \texttt{createThicknessController()}
+	 	\item \texttt{createColorController()}
+	 \end{itemize}
+	 
+	 \subsubsection{Método \texttt{generatePanel()}}\label{panel:generatePanel}
+	 Se crea el contenedor principal con etiquetas \texttt{<div>}. En este método se generan:
+	\begin{itemize}
+		 \item El \textit{slider} mediante el cual el usuario podrá seleccionar el grosor del pincel.
+		 \item La paleta de selección de colores
+		 \item Un botón de \textit{reset} mediante el cual se limpia completamente el lienzo de cualquier trazo que el usuario haya podido realizar
+	\end{itemize}	 
+	Una vez creado todos estos elementos, se anidan todos estos elementos dentro del contenedor \texttt{<div>} con la primitiva \texttt{child()} de la librería \texttt{p5.dom.min.js}.
+	
+	Finalmente, se establece el estilo del contenedor utilizando \texttt{CSS} y la primitiva \texttt{style()} que ofrece la librería esta misma librería.
+	
+	Puede observarse como se genera un evento que llama al método \texttt{clear()} cuando se realiza click sobre el botón \texttt{Clear}. La primitiva que acciona este evento es \texttt{mouseClicked()}. 
+	
+	\lstinputlisting[language=Java, firstline=71, lastline=92]{../src/sketch.js}
+	
+	\subsubsection{Método \texttt{createThicknessController()}}\label{panel:thickness}
+	Este método genera y posiciona, mediante manipulaciones \texttt{DOM}, el \texttt{<div>} los elementos que forman parte del control del grosor del pincel.
+	
+	Cada vez que se modifica el valor del \textit{slider} se llama a la primitiva \texttt{input()} que acciona un evento que llamará al método \texttt{updateThicknessVal()}.
+	
+	Puede observarse, además, cómo al llamar a la primitiva \texttt{attribute()} se han añadido atributos a la etiqueta \texttt{<input>} que se genera en el documento \texttt{HTML} cuando se llama a la primitiva \texttt{createSlider()}.  
+	
+	 \lstinputlisting[language=Java, firstline=36, lastline=57]{../src/sketch.js}
+	
+	\subsubsection{Método \texttt{createColorController()}}\label{panel:colorpicker}
+	Este método genera el botón que abre la paleta de selección de colores. Este botón se genera con la llamada a \texttt{createColorPicker()}. Como puede observarse, se establece el color negro por defecto.
+	
+	Cada vez que se cambie el valor de este botón, se acciona un evento que llama al método \texttt{changeColor()}. Este evento se produce al llamar a la primitiva \texttt{input()}.
 		
-	%\begin{figure}[h]
-	%	\centering
-	%	\includegraphics[width=0.9\textwidth]{FOTO.jpg}
-	%	\caption{ALGO ESCRIBE}
-	%\end{figure}
+		
+	\lstinputlisting[language=Java, firstline=59, lastline=69]{../src/sketch.js}
 	
-	\chapter{Conclusiones}	
+	\subsection{Eventos}\label{sub:eventos}
+	Los eventos que aquí se han implementado se pueden clasificar en los siguientes grupos:
+	\begin{itemize}
+		\item Eventos relacionados con la generación de trazos del pincel
+		\item Evento relacionado con la actualización del grosor del pincel
+		\item Evento relacionado con la actualización del color del trazo.
+		\item Evento responsable de limpiar el lienzo de trazos.
+	\end{itemize}
+	
+	\subsubsection{Eventos relacionados con la generación de trazos}
+	Los trazos son generados cuando un evento llama a la función \texttt{drawStroke()} (\textit{callback function}). Aquí se genera un trazo con el valor del grosor y color del pincel seleccionado por el usuario. El grosor se ajusta al pasarle como argumento a la primitiva \texttt{strokeWeight()} el valor de la variable global \texttt{thickness} mientras que el color queda establecido al llamar a la primitiva \texttt{stroke()}, pasándo como argumento la variable global \texttt{myRGB}.
+	
+	Cada trazo se define como un conjunto de líneas que tiene como punto inicial la posición del ratón en el \textit{frame} actual del ratón y como punto final, la posición del ratón en el \textit{frame} anterior. Este conjunto de líneas son mostrados por pantalla tras llamar a la primitiva \texttt{line()}. 
+	
+	\lstinputlisting[language=Java, firstline=94, lastline=101]{../src/sketch.js}
+	
+	Los eventos \texttt{mousePressed()} y \texttt{mouseDragged()} llaman respectivamente a \texttt{drawStroke()} (función \textit{callback}) cuando se hace clic sobre el lienzo y se arrastra el ratón sobre el mismo.
+	
+	\lstinputlisting[language=Java, firstline=26, lastline=34]{../src/sketch.js}
+	
+	\subsubsection{Evento relacionado con el grosor del pincel}
+	Tal y como se describe en la sección \ref{panel:thickness}, el evento \texttt{input()} que se genera sobre el \textit{slider} del panel que controla el grosor del pincel llama a una función \textit{callback} denominada \texttt{updateThicknessVal()}.
+	
+	Esta función ajusta el valor de la variable global \texttt{thickness} al valor que el usuario haya seleccionado en el \textit{slider}, además de actualizar la etiqueta \texttt{<span>} asociada al mismo, el cual muestra al usuario el valor del grosor del trazo elegido.
+	
+	\lstinputlisting[language=Java, firstline=103, lastline=107]{../src/sketch.js}
+	
+	\subsubsection{Evento relacionado con la actualización del color del trazo}
+	En la sección \ref{panel:colorpicker} se describe como el botón que activa la paleta de selección de colores acciona un evento que llama al \textit{callback} denominado \texttt{changeColor()}.
+	
+	Esta función ajusta el valor de la variable global \texttt{myRGB} al valor del color elegido. Obsérvese como se llama al método \texttt{color()} del objeto de selección de color.
+	
+	\lstinputlisting[language=Java, firstline=109, lastline=112]{../src/sketch.js}
+	
+	\subsubsection{Evento responsable de limpiar el lienzo de trazos.}
+	Cada vez que se hace clic sobre el botón \texttt{Clear} (ver sección \ref{panel:generatePanel}) del panel de control se acciona un evento que llama al método \texttt{clear()}, el cual limpia el lienzo tras llamar a la primitiva \texttt{background()} que pintará todo el lienzo de color blanco.
+	
+	\lstinputlisting[language=Java, firstline=114, lastline=117]{../src/sketch.js}
+	
+	
+	\chapter{Resultados y Discusión}\label{chap:discuss}
+	La aplicación obtenida con \texttt{p5.js} nos permite dibujar sobre un lienzo en blanco y cambiar entre los diferentes colores y grosor de pincel. Se observa la funcionalidad añadida que permite limpiar el lienzo de trazos, permitiéndonos dibujar nuevos trazos sobre el mismo de manera rápida y sencilla.
+	
+	Como se puede observar, \texttt{p5.js} es una librería escrita en \texttt{JavasScript} que permite trabajar con gráficos en un soporte web de forma análoga a \textit{Processing}.
+	
+	Puede observarse lo fácil que es adaptarse de este framework y la similitud de sus diversas primitivas con las de \textit{Processing}.
+		
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\textwidth]{sketchjs.jpg}
+		\caption{Algunos trazos de diferente grosor y color realizados con \texttt{SketchJS}}
+	\end{figure}
 	
 	
 	\bibliography{references}
